@@ -1,17 +1,9 @@
-# First we'll import the os module
-# This will allow us to create file paths across operating systems
-import os
-
 # Module for reading CSV files
-# https://docs.python.org/3/library/csv.html
+
 import csv
 
+#Module for basic statistics 
 import statistics
-
-## This os.path.join function is used to concatenate all of the provided arguments 
-## together with the forwardslash/backslash that is appropriate for your operating 
-## system. This allows our code to operate regardless of the operating system.
-
 
 #Set a path for the CSV file
 
@@ -32,11 +24,33 @@ with open(csvpath, 'r') as csvfile:
 
     for row in csvreader:
         month = row[0]
-        pl= int(row[1])
+        pl = int(row[1])
 
         months.append(month)
         pls.append(pl)
 
+
+#Loop through each item in pl list and create a new "Montly Change" list by subtracting month +1 by month starting at row 1 
+monthtly_changes = []
+index_change = 867884
+for i in pls[1:]:
+    monthtly_change = i - index_change
+    monthtly_changes.append(monthtly_change)
+    index_change = i
+
+#Loop through monthly changes to find the max and min profits
+#Find the index of max and min profit values and set to variables to find the index
+for i in monthtly_changes:
+    if i == max(monthtly_changes):
+        max_profit = i
+        max_profit_index = 1 + (monthtly_changes.index(i))
+    elif i == min(monthtly_changes):
+        min_profit = i
+        min_profit_index = 1 + (monthtly_changes.index(i))
+
+#Set variables using max and min profit index variables into the months list to find the respective month with max and min profits
+max_profit_month = months[max_profit_index]
+min_profit_month = months[min_profit_index]
 
 
 print("Financial Analysis")
@@ -46,24 +60,15 @@ print("-"* 40)
 print(f"Total Months: {len(months)}")
 
 
+
 #Print the net total amount of "Profit/Losses" over the entire period
-print(f"Total: $ {sum(pls)}")
+print(f"Total: ${sum(pls)}")
 
 #Print the mean of P/L over the entire period
-print(f"Average Change: $ {round(statistics.mean(pls),2)}")
+print(f"Average Change: ${round(statistics.mean(monthtly_changes),2)}")
 
+#Print the greatest increase and decrease in profits with each respective month and profit/loss value
+print(f"Greatest Increase in Profits: {max_profit_month} (${max_profit})")
+print(f"Greatest Decrease in Profits: {min_profit_month} (${min_profit})")
 
-pmax = max(pls)
-pmax_index = pls.index(pmax)
-pmax_month = months[pmax_index]
-
-pmin = min(pls)
-pmin_index = pls.index(pmin)
-pmin_month = months[pmin_index]
-
-
-print(f"The greatest increase in profits: {pmax_month} (${pmax})")
-print(f"The greatest decrease in profits: {pmin_month} (${pmin})")
-
-
-
+#Export results to txt file by using command in GitBash as follows: python main.py > PyBank_Output.txt
